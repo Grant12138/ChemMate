@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Chemical Equation Balancer</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- MathLive CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/mathlive/dist/mathlive.css">
+  <script src="https://cdn.jsdelivr.net/npm/mathlive/dist/mathlive.min.js"></script>
+  <style>
+    body {
+      padding-top: 2rem;
+      background: #f8f9fa;
+    }
+    math-field {
+      font-size: 1.2rem;
+      border: 1px solid #ccc;
+      padding: 0.5rem;
+      width: 100%;
+      max-width: 500px;
+      display: block;
+      margin-bottom: 1rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1 class="mb-4 text-center">Chemical Equation Balancer</h1>
+    <div class="card shadow-sm">
+      <div class="card-body">
+        <form id="equation-form" action="/balance" method="post">
+          <div class="mb-3">
+            <label for="math-field" class="form-label">Enter Equation</label>
+            <math-field id="math-field" placeholder="Type your chemical equation here..."></math-field>
+          </div>
+          <!-- Hidden input to hold the LaTeX output -->
+          <input type="hidden" name="equation" id="equation">
+          <button type="submit" class="btn btn-primary w-100">Balance Equation</button>
+        </form>
+      </div>
+    </div>
+  </div>
+  <script>
+    // When the form is submitted, grab the LaTeX output from the math-field
+    document.getElementById('equation-form').addEventListener('submit', function(e) {
+      var mathField = document.getElementById('math-field');
+      var latexInput = mathField.getValue();
+      document.getElementById('equation').value = latexInput;
+    });
+  </script>
+  <!-- Bootstrap Bundle with Popper -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

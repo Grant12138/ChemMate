@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Balanced Result</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- MathLive CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/mathlive/dist/mathlive.css">
+  <script src="https://cdn.jsdelivr.net/npm/mathlive/dist/mathlive.min.js"></script>
+  <style>
+    body {
+      padding-top: 2rem;
+      background: #f8f9fa;
+    }
+    math-field {
+      font-size: 1.2rem;
+      border: 1px solid #ccc;
+      padding: 0.5rem;
+      display: block;
+      margin-bottom: 1rem;
+      pointer-events: none; /* read-only */
+      width: 100%;
+      max-width: 500px;
+      margin: 0 auto 1rem auto;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1 class="mb-4 text-center">Chemical Equation Balancer</h1>
+    <div class="card shadow-sm mb-4">
+      <div class="card-body text-center">
+        <p class="mb-2"><strong>Input Equation:</strong></p>
+        <math-field id="input-field" read-only></math-field>
+        {% if balanced %}
+          <p class="mb-2"><strong>Balanced Equation:</strong></p>
+          <math-field id="result-field" read-only></math-field>
+        {% else %}
+          <p class="mb-2 text-danger"><strong>Error:</strong> {{ error }}</p>
+        {% endif %}
+      </div>
+    </div>
+
+    {% if explanation %}
+      <div class="card shadow-sm mb-4">
+        <div class="card-body">
+          <h3 class="card-title">Explanation</h3>
+          <!-- Mark the explanation as safe to render HTML -->
+          <div>{{ explanation | safe }}</div>
+        </div>
+      </div>
+    {% endif %}
+
+    <div class="text-center">
+      <a href="/" class="btn btn-secondary">Try another equation</a>
+    </div>
+  </div>
+
+  <script>
+    function formatChemicalEquation(latex) {
+      // Convert internal parsed plain text arrow back to LaTeX arrow and apply subscript formatting
+      latex = latex.replace(/-->/g, "\\longrightarrow ");
+      latex = latex.replace(/([A-Za-z])(\d+)(?!_?\{)/g, "$1_{$2}");
+      return latex;
+    }
+    
+    {% if balanced %}
+      var inputLatex = {{ equation|tojson }};
+      var balancedLatex = {{ balanced|tojson }};
+      inputLatex = formatChemicalEquation(inputLatex);
+      balancedLatex = formatChemicalEquation(balancedLatex);
+      document.getElementById('input-field').setValue(inputLatex);
+      document.getElementById('result-field').setValue(balancedLatex);
+    {% else %}
+      var inputLatex = {{ equation|tojson }};
+      inputLatex = formatChemicalEquation(inputLatex);
+      document.getElementById('input-field').setValue(inputLatex);
+    {% endif %}
+    console.log("InputLatex:", inputLatex);
+    console.log("BalancedLatex:", typeof balancedLatex !== 'undefined' ? balancedLatex : "N/A");
+  </script>
+  <!-- Bootstrap Bundle with Popper -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
